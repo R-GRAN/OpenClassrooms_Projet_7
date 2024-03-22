@@ -1,11 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
-const bookRoutes= require("./routes/book")
+const bookRoutes= require("./routes/book");
+const config = require("./config")
+
 
 mongoose
   .connect(
-    "mongodb+srv://openClassrooms:openClassrooms@cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    `mongodb+srv://${config.db.user}:${config.db.password}@cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
