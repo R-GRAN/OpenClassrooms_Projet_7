@@ -32,8 +32,8 @@ app.use((req, res, next) => {
 /* Permet de recuperer le JSON (ancien bodyParser) */
 app.use(express.json())
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
-app.use("images",express.static(path.join(__dirname,"images")))
 
 app.use("/api/auth", userRoutes);
 app.use("/api/books",bookRoutes)
