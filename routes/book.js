@@ -10,4 +10,6 @@ router.get("/:id", bookCtrl.getBookById);
 
 router.post("/", auth, multer, bookCtrl.createBook);
 
+router.put("/:id",auth, multer, bookCtrl.modifyBook)
+
 module.exports = router;
