@@ -1,15 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
-const bookRoutes= require("./routes/book");
-const config = require("./config")
-const path = require ("path")
-
+const bookRoutes = require("./routes/book");
+const config = require("./config");
+const path = require("path");
 
 mongoose
   .connect(
-    `mongodb+srv://${config.db.user}:${config.db.password}@cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
-    { useNewUrlParser: true, useUnifiedTopology: true }
+    `mongodb+srv://${config.db.user}:${config.db.password}@cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
@@ -30,14 +28,11 @@ app.use((req, res, next) => {
   next();
 });
 /* Permet de recuperer le JSON (ancien bodyParser) */
-app.use(express.json())
+app.use(express.json());
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
-app.use("/api/books",bookRoutes)
-
-
+app.use("/api/books", bookRoutes);
 
 module.exports = app;
