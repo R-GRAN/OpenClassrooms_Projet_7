@@ -1,13 +1,14 @@
+require('dotenv').config()
+console.log(process.env) // remove this after you've confirmed it is working
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const bookRoutes = require("./routes/book");
-const config = require("./config");
 const path = require("path");
 
 mongoose
   .connect(
-    `mongodb+srv://${config.db.user}:${config.db.password}@cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_DOMAINE}`
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
