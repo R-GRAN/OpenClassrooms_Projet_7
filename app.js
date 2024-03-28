@@ -1,10 +1,10 @@
-require('dotenv').config()
-console.log(process.env) // remove this after you've confirmed it is working
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const bookRoutes = require("./routes/book");
 const path = require("path");
+const {RequestLimiter} = require("./middlewares/rateLimiter");
 
 mongoose
   .connect(
@@ -32,6 +32,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+app.use(RequestLimiter);
 
 app.use("/api/auth", userRoutes);
 app.use("/api/books", bookRoutes);
