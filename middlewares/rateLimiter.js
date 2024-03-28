@@ -11,17 +11,17 @@ const signupLimiter = rateLimiter({
 const loginLimiter = rateLimiter({
   max: 3,
   windowMS: 10000,
-  message: "Cherche ton mot de passe et reviens plus tard",
+  message: "Trop de tentatives de connexion",
   standardHeaders: false,
   legacyHeaders: false,
 });
 
 const RequestLimiter = rateLimiter({
-  max: 5,
+  max: 50,
   windowMS: 5000,
-  message: "Prend une pause, reviens plus tard",
+  message: "Trop de requêtes envoyées pour le moment",
   standardHeaders: false,
-	legacyHeaders: false,
+  legacyHeaders: false,
 });
 
-module.exports = {signupLimiter,loginLimiter,RequestLimiter}
+module.exports = { signupLimiter, loginLimiter, RequestLimiter };
