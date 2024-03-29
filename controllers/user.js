@@ -14,7 +14,7 @@ exports.signup = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({ message: "Utilisateur créé !" });
+    res.status(201).json({ message: "User created" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -27,7 +27,7 @@ exports.login = async (req, res) => {
     if (user === null)
       return res
         .status(400)
-        .json({ message: "Identifiant ou/et mot de passe incorrect(s)" });
+        .json({ message: "Incorrect username and/or password" });
 
     const isValid = await bcrypt.compare(req.body.password, user.password);
 
@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
       });
     } else {
       res.status(400).json({
-        message: "Identifiant ou/et mot de passe incorrect(s)",
+        message: "Incorrect username and/or password",
       });
     }
   } catch (error) {
