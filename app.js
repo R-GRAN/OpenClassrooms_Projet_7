@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const bookRoutes = require("./routes/book");
 const path = require("path");
-const {RequestLimiter} = require("./middlewares/rateLimiter");
+const helmet = require("helmet");
+const { RequestLimiter } = require("./middlewares/rateLimiter");
 
 mongoose
   .connect(
@@ -14,6 +15,8 @@ mongoose
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 const app = express();
+
+app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
 
 /* headers CORS */
 app.use((req, res, next) => {
