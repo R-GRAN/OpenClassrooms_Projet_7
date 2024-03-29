@@ -4,10 +4,12 @@ const schema = new passwordValidator();
 
 schema
   .is()
-  .min() // Minimum length 6
+  .min(6) // Minimum length 6
   .is()
   .not()
   .oneOf(["azerty", "123456"]);
+
+  
 
 module.exports = (req, res, next) => {
   const password = req.body.password;
