@@ -6,7 +6,7 @@ exports.getAllBooks = async (req, res) => {
     const books = await Book.find();
     res.status(200).json(books);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -15,9 +15,9 @@ exports.getBookById = async (req, res) => {
     const book = await Book.findOne({ _id: req.params.id });
 
     if (book) res.status(200).json(book);
-    else res.status(404).json({ error });
+    else res.status(404).json({ message: "Livre introuvable" });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -26,7 +26,7 @@ exports.getBestRatingBooks = async (req, res) => {
     const bestBooks = await Book.find().sort({ rating: -1 }).limit(3);
     res.status(200).json(bestBooks);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -44,10 +44,9 @@ exports.createBook = async (req, res) => {
     });
 
     await book.save();
-
     res.status(201).json({ message: "Livre créé !" });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -68,25 +67,26 @@ exports.createRatingBook = async (req, res) => {
       return res.status(400).json("Vous avez déjà voté pour ce livre");
     }
 
-    const newRating ={userId: userId, grade: rating}
+    const newRating = { userId: userId, grade: rating };
 
-  ratings.push(newRating);
+    ratings.push(newRating);
 
-  book.averageRating = averageRating(ratings)
+    book.averageRating = averageRating(ratings);
 
-  function averageRating(ratings){
-    const sumOfAllRating = ratings.reduce((sum,rating)=>sum + rating.grade,0)
-    return sumOfAllRating/ratings.length
-  }
+    function averageRating(ratings) {
+      const sumOfAllRating = ratings.reduce(
+        (sum, rating) => sum + rating.grade,
+        0
+      );
+      const average = sumOfAllRating / ratings.length;
+      return Math.round(average);
+    }
 
-  const updatedBook = await book.save()
+    const updatedBook = await book.save();
 
-      res.status(200).json(updatedBook);
-
+    res.status(200).json(updatedBook);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -104,8 +104,10 @@ exports.modifyBook = async (req, res) => {
     delete bookObject._userId;
     const book = await Book.findOne({ _id: req.params.id });
 
+    if (!book) return res.status(404).json({ message: "Livre introuvable" });
+
     if (book.userId != req.auth.userId)
-      return res.status(401).json({ message: "Not authorized" });
+      return res.status(403).json({ message: "unauthorized request" });
 
     const updatedBook = await Book.updateOne(
       { _id: req.params.id },
@@ -118,7 +120,7 @@ exports.modifyBook = async (req, res) => {
       res.status(400).json({ error: "Erreur lors de la modification " });
     }
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -131,7 +133,7 @@ exports.deleteBook = async (req, res) => {
     }
 
     if (book.userId != req.auth.userId)
-      return res.status(401).json({ message: "Not authorized" });
+      return res.status(403).json({ message: "unauthorized request" });
 
     const filename = book.imageUrl.split("/images/")[1];
 
@@ -141,6 +143,6 @@ exports.deleteBook = async (req, res) => {
       });
     });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };

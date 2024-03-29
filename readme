@@ -1,0 +1,10 @@
+Un fichier .env est présent pour stocker et gérer les variables d'environnement et autres données sensibles mais ne doit pas être commité.
+
+Ce projet étant un exercice, voici son contenu pour pouvoir se connecter
+
+DB_PORT: 4000
+DB_USER: "openClassrooms"
+DB_DOMAINE: "cluster0.kbbytib.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+DB_PASSWORD: "A8E6ihPeBBGndEiZ"
+
+JWT_KEY: "RANDOM_SUPER_KEY_FOR_SECRET_TOKEN"
