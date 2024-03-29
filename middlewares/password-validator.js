@@ -1,9 +1,10 @@
-const validator = require("password-validator");
-const schema = new validator();
+const passwordValidator = require("password-validator");
+const schema = new passwordValidator();
+
 
 schema
   .is()
-  .min(6) // Minimum length 6
+  .min() // Minimum length 6
   .is()
   .not()
   .oneOf(["azerty", "123456"]);
