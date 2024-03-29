@@ -1,5 +1,6 @@
 const Book = require("../models/Book.js");
-const fs = require("fs");
+const path = require("path");
+const fs = require("fs").promises;
 
 exports.getAllBooks = async (req, res) => {
   try {
@@ -109,12 +110,22 @@ exports.modifyBook = async (req, res) => {
     if (book.userId != req.auth.userId)
       return res.status(403).json({ message: "unauthorized request" });
 
+    const oldImagePath = path.join(
+      __dirname,
+      "..",
+      "images",
+      book.imageUrl.split("/").pop()
+    );
+
     const updatedBook = await Book.updateOne(
       { _id: req.params.id },
       { ...bookObject, _id: req.params.id }
     );
 
-    if (updatedBook) {
+    if (updatedBook && req.file) {
+      if (oldImagePath != null) await fs.unlink(oldImagePath);
+      res.status(200).json({ message: "Book modified" });
+    } else if (updatedBook) {
       res.status(200).json({ message: "Book modified" });
     } else {
       res.status(400).json({ error: "Error during modification" });
