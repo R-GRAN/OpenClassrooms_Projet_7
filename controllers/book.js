@@ -1,5 +1,4 @@
 const Book = require("../models/Book.js");
-const path = require("path");
 const fs = require("fs").promises;
 
 exports.getAllBooks = async (req, res) => {
@@ -110,22 +109,17 @@ exports.modifyBook = async (req, res) => {
     if (book.userId != req.auth.userId)
       return res.status(403).json({ message: "unauthorized request" });
 
-    const oldImagePath = path.join(
-      __dirname,
-      "..",
-      "images",
-      book.imageUrl.split("/").pop()
-    );
+    const oldImageFilename = book.imageUrl.split("/images/")[1];
 
     const updatedBook = await Book.updateOne(
       { _id: req.params.id },
       { ...bookObject, _id: req.params.id }
     );
 
-    if (updatedBook && req.file) {
-      if (oldImagePath != null) await fs.unlink(oldImagePath);
-      res.status(200).json({ message: "Book modified" });
-    } else if (updatedBook) {
+    if (updatedBook) {
+      if (req.file) {
+        await fs.unlink(`images/${oldImageFilename}`);
+      }
       res.status(200).json({ message: "Book modified" });
     } else {
       res.status(400).json({ error: "Error during modification" });
@@ -148,11 +142,9 @@ exports.deleteBook = async (req, res) => {
 
     const filename = book.imageUrl.split("/images/")[1];
 
-    fs.unlink(`images/${filename}`, () => {
-      Book.deleteOne({ _id: req.params.id }).then(() => {
-        res.status(200).json({ message: "Book deleted" });
-      });
-    });
+    await Book.deleteOne({ _id: req.params.id });
+    await fs.unlink(`images/${filename}`);
+    res.status(200).json({ message: "Book deleted" });
   } catch (error) {
     res.status(500).json(error);
   }
