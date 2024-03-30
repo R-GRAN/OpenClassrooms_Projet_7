@@ -11,7 +11,6 @@ const upload = multer({ storage: storage });
 const imageMiddleware = async (req, res, next) => {
   try {
     if (!req.file) return next();
-
     // Redimensionnement de l'image avec Sharp
     const resizedImageBuffer = await sharp(req.file.buffer)
       .resize({ width: 400 }) // Spécifier la largeur souhaitée
@@ -21,8 +20,16 @@ const imageMiddleware = async (req, res, next) => {
     // Génération d'un nom de fichier unique avec l'extension .webp
     const name = req.file.originalname.split(" ").join("_");
     const fileName = `${name + Date.now()}.webp`;
+    const imagesFolder = __dirname+"/../images";
+    // Verifie si le dossier "images" est accesible, si ce n'est pas le cas, crée un dossier "images"
+    try {
+      await fs.access(imagesFolder);
+    } catch (error) {
+      await fs.mkdir(imagesFolder);
+    }
+
     // Définir le chemin où enregistrer l'image (à la racine du projet dans le dossier "images")
-    const filePath = path.join(__dirname, "..", "images", fileName); // ".." pour revenir au répertoire parent
+    const filePath = path.join(imagesFolder, fileName); // ".." pour revenir au répertoire parent
     // Écriture de l'image redimensionnée dans le dossier spécifié
     await fs.writeFile(filePath, resizedImageBuffer);
 
