@@ -7,7 +7,7 @@ schema
   .min(6) // Minimum length 6
   .is()
   .not()
-  .oneOf(["azerty", "123456"]);
+  .oneOf(["azerty", "123456"]);// passwords interdits
 
   
 
